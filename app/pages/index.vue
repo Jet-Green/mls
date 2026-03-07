@@ -27,7 +27,7 @@ function closeLightbox() {
   <v-container class="py-8">
     <div class="d-flex justify-space-between align-center mb-6">
       <h1 class="text-h4">Галерея</h1>
-      <v-btn color="primary" to="/upload" prepend-icon="mdi-upload">
+      <v-btn class="nav-btn" to="/upload" prepend-icon="mdi-upload">
         Загрузить фото
       </v-btn>
     </div>
@@ -39,13 +39,13 @@ function closeLightbox() {
     <div v-else-if="error" class="text-center py-12">
       <v-icon icon="mdi-alert-circle" size="64" color="error" class="mb-4" />
       <p class="text-h6 text-error">{{ error }}</p>
-      <v-btn class="mt-4" @click="fetchPhotos">Повторить</v-btn>
+      <v-btn class="mt-4 nav-btn" @click="fetchPhotos">Повторить</v-btn>
     </div>
 
     <div v-else-if="!photos.length" class="text-center py-12">
       <v-icon icon="mdi-image-off" size="64" color="grey" class="mb-4" />
       <p class="text-h6 text-grey">Нет фотографий</p>
-      <v-btn class="mt-4" color="primary" to="/upload" prepend-icon="mdi-plus">
+      <v-btn class="mt-4 nav-btn" to="/upload" prepend-icon="mdi-plus">
         Загрузить первое фото
       </v-btn>
     </div>
@@ -61,6 +61,7 @@ function closeLightbox() {
           :src="photo.url"
           :alt="photo.key"
           class="gallery-image"
+          aspect-ratio="1"
           cover
         >
           <template #placeholder>
@@ -93,6 +94,13 @@ function closeLightbox() {
 </template>
 
 <style scoped>
+.nav-btn {
+  background: rgba(109, 109, 109, 0.5) !important;
+  backdrop-filter: blur(8px);
+  border-radius: 999px !important;
+  color: white !important;
+}
+
 .masonry-grid {
   column-count: 2;
   column-gap: 16px;
