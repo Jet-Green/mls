@@ -74,11 +74,9 @@ function closeLightbox() {
     <v-dialog v-model="lightboxOpen" max-width="90vw" max-height="90vh" @click="closeLightbox">
       <v-card flat class="bg-transparent" @click.stop>
         <v-img v-if="lightboxImage" :src="lightboxImage" max-height="85vh" contain @click="closeLightbox" />
-        <div v-if="lightboxCaption || lightboxId" class="lightbox-caption d-flex justify-space-between align-center">
-          <span>{{ lightboxCaption }}</span>
-          <v-btn icon="mdi-pencil" size="small" variant="text" color="white" :to="`/edit/${lightboxId}`" @click.stop />
-        </div>
         <v-btn icon="mdi-close" color="white" variant="text" class="lightbox-close" @click="closeLightbox" />
+        <v-btn icon="mdi-pencil" color="white" variant="text" class="lightbox-edit" :to="`/edit/${lightboxId}`" @click.stop />
+        <div v-if="lightboxCaption" class="lightbox-caption">{{ lightboxCaption }}</div>
       </v-card>
     </v-dialog>
   </v-container>
@@ -148,6 +146,13 @@ function closeLightbox() {
 .lightbox-close {
   position: absolute;
   top: 16px;
+  right: 16px;
+  z-index: 100;
+}
+
+.lightbox-edit {
+  position: absolute;
+  top: 60px;
   right: 16px;
   z-index: 100;
 }
