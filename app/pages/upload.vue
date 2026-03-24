@@ -6,7 +6,8 @@ definePageMeta({ middleware: 'auth' })
 const router = useRouter()
 const { uploadPhotos, isLoading, error } = useGallery()
 
-const selectedFiles = ref<{ preview: string; file: File }[]>([])
+const fileInput = ref<HTMLInputElement | null>(null)
+const selectedFiles = ref<{ preview: string; file: File; caption: string }[]>([])
 
 function onFileSelected(event: Event) {
   const input = event.target as HTMLInputElement
@@ -19,7 +20,8 @@ function onFileSelected(event: Event) {
     }
     selectedFiles.value.push({
       preview: URL.createObjectURL(file),
-      file
+      file,
+      caption: ''
     })
   }
   input.value = ''
@@ -40,7 +42,8 @@ async function handleUpload() {
   }
 
   const files = selectedFiles.value.map(item => item.file)
-  const success = await uploadPhotos(files)
+  const captions = selectedFiles.value.map(item => item.caption)
+  const success = await uploadPhotos(files, captions)
 
   if (success) {
     toast.success('Фото загружены')
@@ -63,38 +66,23 @@ onUnmounted(() => {
     </div>
 
     <v-card class="pa-6">
-      <v-btn
-        class="nav-btn"
-        prepend-icon="mdi-plus"
-        size="large"
-        @click="$refs.fileInput?.click()"
-        :loading="isLoading"
-      >
+      <v-btn class="nav-btn" prepend-icon="mdi-plus" size="large" @click="fileInput?.click()"
+        :loading="isLoading">
         Добавить фото
       </v-btn>
 
-      <input
-        ref="fileInput"
-        type="file"
-        accept="image/*"
-        multiple
-        hidden
-        @change="onFileSelected"
-      />
+      <input ref="fileInput" type="file" accept="image/*" multiple hidden @change="onFileSelected" />
 
       <div v-if="selectedFiles.length" class="mt-6">
         <v-row>
-          <v-col v-for="(img, i) in selectedFiles" :key="i" cols="6" sm="4" md="3">
-            <v-card class="overflow-hidden rounded-lg" flat>
-              <v-img :src="img.preview" aspect-ratio="1" cover />
-              <v-btn
-                icon="mdi-delete"
-                color="error"
-                variant="text"
-                size="small"
-                class="delete-btn"
-                @click="removeImage(i)"
-              />
+          <v-col v-for="(img, i) in selectedFiles" :key="i" cols="12">
+            <v-card class="rounded-lg" flat>
+              <v-img :src="img.preview" aspect-ratio="16/9" cover class="mb-2" />
+              <div class="d-flex align-center justify-space-between">
+                <v-textarea v-model="img.caption" label="Подпись" variant="outlined" rows="auto" hide-details
+                  class="flex-grow-1 mr-4" />
+                <v-btn icon="mdi-delete" color="error" variant="text" size="small" @click="removeImage(i)" />
+              </div>
             </v-card>
           </v-col>
         </v-row>
@@ -109,13 +97,8 @@ onUnmounted(() => {
 
       <div class="d-flex justify-end gap-3">
         <v-btn variant="text" to="/" :disabled="isLoading">Отмена</v-btn>
-        <v-btn
-          class="nav-btn"
-          size="large"
-          :disabled="!selectedFiles.length"
-          :loading="isLoading"
-          @click="handleUpload"
-        >
+        <v-btn class="nav-btn" size="large" :disabled="!selectedFiles.length" :loading="isLoading"
+          @click="handleUpload">
           Загрузить
         </v-btn>
       </div>

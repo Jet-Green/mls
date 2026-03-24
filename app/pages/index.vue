@@ -7,13 +7,15 @@ const { photos, isLoading, error, fetchPhotos, formatSize, formatDate } = useGal
 
 const lightboxOpen = ref(false)
 const lightboxImage = ref('')
+const lightboxCaption = ref('')
 
 onMounted(() => {
   fetchPhotos()
 })
 
-function openLightbox(url: string) {
+function openLightbox(url: string, caption: string = '') {
   lightboxImage.value = url
+  lightboxCaption.value = caption
   lightboxOpen.value = true
 }
 
@@ -26,7 +28,7 @@ function closeLightbox() {
 <template>
   <v-container class="py-8">
     <div class="d-flex justify-space-between align-center mb-6">
-      <h1 class="text-h4">Галерея</h1>
+      <h1 class="text-h4">Наш альбом</h1>
       <v-btn class="nav-btn" to="/upload" prepend-icon="mdi-upload">
         Загрузить фото
       </v-btn>
@@ -51,19 +53,8 @@ function closeLightbox() {
     </div>
 
     <div v-else class="masonry-grid">
-      <div
-        v-for="photo in photos"
-        :key="photo.key"
-        class="masonry-item"
-        @click="openLightbox(photo.url)"
-      >
-        <v-img
-          :src="photo.url"
-          :alt="photo.key"
-          class="gallery-image"
-          aspect-ratio="1"
-          cover
-        >
+      <div v-for="photo in photos" :key="photo.key" class="masonry-item" @click="openLightbox(photo.url, photo.caption)">
+        <v-img v-if="photo.url" :src="photo.url" :alt="photo.key" class="gallery-image" aspect-ratio="1" cover>
           <template #placeholder>
             <v-row class="fill-height ma-0" align="center" justify="center">
               <v-progress-circular indeterminate color="grey-lighten-2" />
@@ -80,14 +71,9 @@ function closeLightbox() {
 
     <v-dialog v-model="lightboxOpen" max-width="90vw" max-height="90vh" @click="closeLightbox">
       <v-card flat class="bg-transparent" @click.stop>
-        <v-img :src="lightboxImage" max-height="90vh" contain @click="closeLightbox" />
-        <v-btn
-          icon="mdi-close"
-          color="white"
-          variant="text"
-          class="lightbox-close"
-          @click="closeLightbox"
-        />
+        <v-img v-if="lightboxImage" :src="lightboxImage" max-height="85vh" contain @click="closeLightbox" />
+        <div v-if="lightboxCaption" class="lightbox-caption">{{ lightboxCaption }}</div>
+        <v-btn icon="mdi-close" color="white" variant="text" class="lightbox-close" @click="closeLightbox" />
       </v-card>
     </v-dialog>
   </v-container>
@@ -159,5 +145,13 @@ function closeLightbox() {
   top: 16px;
   right: 16px;
   z-index: 100;
+}
+
+.lightbox-caption {
+  text-align: center;
+  color: white;
+  font-size: 18px;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.5);
 }
 </style>

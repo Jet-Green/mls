@@ -5,6 +5,7 @@ export interface IGalleryItem {
   url: string
   size: number
   lastModified: string | null
+  caption: string
 }
 
 export default function useGallery() {
@@ -24,6 +25,7 @@ export default function useGallery() {
         url: item.presignedUrl || `https://secretstorage.storage.yandexcloud.net/${item.key}`,
         size: item.size || 0,
         lastModified: item.lastModified || null,
+        caption: item.caption || '',
       }))
     } catch (e: any) {
       error.value = e.message || 'Ошибка загрузки галереи'
@@ -32,7 +34,7 @@ export default function useGallery() {
     }
   }
 
-  async function uploadPhotos(files: File[]): Promise<boolean> {
+  async function uploadPhotos(files: File[], captions: string[] = []): Promise<boolean> {
     isLoading.value = true
     error.value = null
 
@@ -41,6 +43,7 @@ export default function useGallery() {
       files.forEach((file) => {
         formData.append('files', file)
       })
+      formData.append('captions', JSON.stringify(captions))
 
       await GalleryApi.addPhotos(formData)
 
