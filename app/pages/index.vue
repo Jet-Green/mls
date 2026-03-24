@@ -56,7 +56,7 @@ function closeLightbox() {
 
     <div v-else class="masonry-grid">
       <div v-for="photo in photos" :key="photo.key" class="masonry-item">
-        <v-img v-if="photo.url" :src="photo.url" :alt="photo.key" class="gallery-image" aspect-ratio="1" cover @click="openLightbox(photo.url, photo.caption, photo._id)"">
+        <v-img v-if="photo.url" :src="photo.url" :alt="photo.key" class="gallery-image" aspect-ratio="1" cover @click="openLightbox(photo.url, photo.caption, photo._id)">
           <template #placeholder>
             <v-row class="fill-height ma-0" align="center" justify="center">
               <v-progress-circular indeterminate color="grey-lighten-2" />
