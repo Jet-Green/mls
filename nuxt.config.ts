@@ -115,7 +115,6 @@ export default defineNuxtConfig({
       navigateFallback: '/',
       navigateFallbackDenylist: [/^\/edit/, /^\/upload/],
       globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
-      defaultRouteHandler: 'NetworkFirst',
       runtimeCaching: [
         {
           urlPattern: /^https:\/\/.*\.storage\.yandexcloud\.net\/.*/i,
