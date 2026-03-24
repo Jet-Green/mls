@@ -56,6 +56,7 @@ export default defineNuxtConfig({
         { name: 'apple-mobile-web-app-capable', content: 'yes' },
         { name: 'apple-mobile-web-app-status-bar-style', content: 'default' },
         { name: 'apple-mobile-web-app-title', content: 'MLS' },
+        { name: 'mobile-web-app-capable', content: 'yes' },
         { name: 'description', content: 'MLS - ваше приложение для управления' },
         { name: 'robots', content: 'index, follow' },
         { property: 'og:title', content: 'MLS' },
@@ -90,7 +91,7 @@ export default defineNuxtConfig({
       display: 'standalone',
       orientation: 'portrait',
       scope: '/',
-      start_url: '/',
+      start_url: '/?standalone=true',
       icons: [
         {
           src: '/icon-192.png',
@@ -126,6 +127,11 @@ export default defineNuxtConfig({
           },
         },
       ],
+    },
+    meta: {
+      name: 'MLS',
+      theme_color: '#ffffff',
+      description: 'MLS App',
     },
   },
 })
