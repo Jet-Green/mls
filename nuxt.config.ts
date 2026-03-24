@@ -53,9 +53,6 @@ export default defineNuxtConfig({
       meta: [
         { name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0' },
         { name: 'theme-color', content: '#ffffff' },
-        { name: 'apple-mobile-web-app-capable', content: 'yes' },
-        { name: 'apple-mobile-web-app-status-bar-style', content: 'default' },
-        { name: 'apple-mobile-web-app-title', content: 'MLS' },
         { name: 'mobile-web-app-capable', content: 'yes' },
         { name: 'description', content: 'MLS - ваше приложение для управления' },
         { name: 'robots', content: 'index, follow' },
@@ -70,7 +67,6 @@ export default defineNuxtConfig({
         { name: 'twitter:image', content: '/icon-512.png' },
       ],
       link: [
-        { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
         { rel: 'icon', type: 'image/png', sizes: '192x192', href: '/android-chrome-192.png' },
         { rel: 'icon', type: 'image/png', sizes: '512x512', href: '/android-chrome-512.png' },
