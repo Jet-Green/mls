@@ -8,14 +8,16 @@ const { photos, isLoading, error, fetchPhotos, formatSize, formatDate } = useGal
 const lightboxOpen = ref(false)
 const lightboxImage = ref('')
 const lightboxCaption = ref('')
+const lightboxId = ref('')
 
 onMounted(() => {
   fetchPhotos()
 })
 
-function openLightbox(url: string, caption: string = '') {
+function openLightbox(url: string, caption: string = '', id: string = '') {
   lightboxImage.value = url
   lightboxCaption.value = caption
+  lightboxId.value = id
   lightboxOpen.value = true
 }
 
@@ -53,8 +55,8 @@ function closeLightbox() {
     </div>
 
     <div v-else class="masonry-grid">
-      <div v-for="photo in photos" :key="photo.key" class="masonry-item" @click="openLightbox(photo.url, photo.caption)">
-        <v-img v-if="photo.url" :src="photo.url" :alt="photo.key" class="gallery-image" aspect-ratio="1" cover>
+      <div v-for="photo in photos" :key="photo.key" class="masonry-item">
+        <v-img v-if="photo.url" :src="photo.url" :alt="photo.key" class="gallery-image" aspect-ratio="1" cover @click="openLightbox(photo.url, photo.caption, photo._id)"">
           <template #placeholder>
             <v-row class="fill-height ma-0" align="center" justify="center">
               <v-progress-circular indeterminate color="grey-lighten-2" />
@@ -72,7 +74,10 @@ function closeLightbox() {
     <v-dialog v-model="lightboxOpen" max-width="90vw" max-height="90vh" @click="closeLightbox">
       <v-card flat class="bg-transparent" @click.stop>
         <v-img v-if="lightboxImage" :src="lightboxImage" max-height="85vh" contain @click="closeLightbox" />
-        <div v-if="lightboxCaption" class="lightbox-caption">{{ lightboxCaption }}</div>
+        <div v-if="lightboxCaption || lightboxId" class="lightbox-caption d-flex justify-space-between align-center">
+          <span>{{ lightboxCaption }}</span>
+          <v-btn icon="mdi-pencil" size="small" variant="text" color="white" :to="`/edit/${lightboxId}`" @click.stop />
+        </div>
         <v-btn icon="mdi-close" color="white" variant="text" class="lightbox-close" @click="closeLightbox" />
       </v-card>
     </v-dialog>

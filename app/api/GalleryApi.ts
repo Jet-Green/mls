@@ -11,5 +11,18 @@ export default {
       method: 'POST',
       body: formData
     })
+  },
+
+  async getById(id: string): Promise<any> {
+    return useNuxtApp().$apiFetch(`/gallery/get-by-id/${id}`, {
+      method: 'GET'
+    })
+  },
+
+  async updateCaption(id: string, caption: string): Promise<any> {
+    return useNuxtApp().$apiFetch('/gallery/update-caption', {
+      method: 'POST',
+      body: { id, caption }
+    })
   }
 }

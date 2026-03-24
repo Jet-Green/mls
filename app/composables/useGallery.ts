@@ -1,6 +1,7 @@
 import GalleryApi from '~/api/GalleryApi'
 
 export interface IGalleryItem {
+  _id: string
   key: string
   url: string
   size: number
@@ -21,6 +22,7 @@ export default function useGallery() {
       const response = await GalleryApi.getAll()
 
       photos.value = response.items.map((item) => ({
+        _id: item._id || '',
         key: item.key!,
         url: item.presignedUrl || `https://secretstorage.storage.yandexcloud.net/${item.key}`,
         size: item.size || 0,
@@ -57,6 +59,20 @@ export default function useGallery() {
     }
   }
 
+  async function updateCaption(id: string, caption: string): Promise<boolean> {
+    try {
+      await GalleryApi.updateCaption(id, caption)
+      const photo = photos.value.find(p => p._id === id)
+      if (photo) {
+        photo.caption = caption
+      }
+      return true
+    } catch (e: any) {
+      error.value = e.message || 'Ошибка сохранения'
+      return false
+    }
+  }
+
   function formatSize(bytes: number): string {
     if (bytes === 0) return '0 B'
     const k = 1024
@@ -83,6 +99,7 @@ export default function useGallery() {
     error,
     fetchPhotos,
     uploadPhotos,
+    updateCaption,
     formatSize,
     formatDate
   }
