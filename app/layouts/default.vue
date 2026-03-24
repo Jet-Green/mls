@@ -44,6 +44,8 @@ async function logOut() {
 <style lang="scss">
 .main-desktop {
   //margin-top: 120px;
+  margin-bottom: 60px;
+
 }
 
 .main-mobile {
