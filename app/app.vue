@@ -1,6 +1,8 @@
 <script setup lang="ts">
 </script>
 <template>
+  <!-- Обязательно для @vite-pwa/nuxt: иначе <link rel="manifest"> не попадает в head как в чистом Vue+Vite -->
+  <NuxtPwaManifest />
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>

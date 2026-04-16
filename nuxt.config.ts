@@ -90,6 +90,8 @@ export default defineNuxtConfig({
   },
   pwa: {
     registerType: 'autoUpdate',
+    // Корректный Content-Type и кэш для manifest (важно для iOS / статического хостинга)
+    registerWebManifestInRouteRules: true,
     manifest: {
       name: 'MLS',
       short_name: 'MLS',
