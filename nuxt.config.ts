@@ -51,14 +51,20 @@ export default defineNuxtConfig({
     head: {
       title: 'MLS',
       meta: [
-        { name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0' },
+        {
+          name: 'viewport',
+          content:
+            'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, viewport-fit=cover',
+        },
         { name: 'theme-color', content: '#ffffff' },
         { name: 'mobile-web-app-capable', content: 'yes' },
         // iOS: без этих тегов страница часто открывается в Safari с адресной строкой и нижней панелью,
         // даже если в манифесте указано display: standalone.
         { name: 'apple-mobile-web-app-capable', content: 'yes' },
-        { name: 'apple-mobile-web-app-status-bar-style', content: 'default' },
+        // Как у нативного приложения: контент под статус-бар (вместе с viewport-fit=cover и safe-area в вёрстке)
+        { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
         { name: 'apple-mobile-web-app-title', content: 'MLS' },
+        { name: 'color-scheme', content: 'light' },
         { name: 'description', content: 'MLS - ваше приложение для управления' },
         { name: 'robots', content: 'index, follow' },
         { property: 'og:title', content: 'MLS' },
@@ -91,9 +97,15 @@ export default defineNuxtConfig({
       theme_color: '#ffffff',
       background_color: '#ffffff',
       display: 'standalone',
+      display_override: ['standalone'],
       orientation: 'portrait',
       scope: '/',
-      start_url: '/?standalone=true',
+      start_url: '/',
+      prefer_related_applications: false,
+      // Chrome/Edge: открывать ссылки в уже установленном окне PWA, а не во вкладке браузера
+      launch_handler: {
+        client_mode: 'navigate-existing',
+      },
       icons: [
         {
           src: '/icon-192.png',
