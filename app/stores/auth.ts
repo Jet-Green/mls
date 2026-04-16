@@ -34,20 +34,21 @@ export const useAuth = defineStore('auth', () => {
   }
 
   async function checkAuth(): Promise<boolean> {
+    if (user.value?._id) {
+      return true
+    }
     try {
-      if (user.value?._id) {
+      const { $apiFetch } = useNuxtApp()
+      const data = await $apiFetch<User | { user: User }>('/auth/refresh', { method: 'GET' })
+      const nextUser = data && typeof data === 'object' && 'user' in data ? (data as { user: User }).user : (data as User)
+      if (nextUser?._id) {
+        user.value = nextUser
         return true
       }
-      const response = await AuthAPI.refresh()
-
-      if (response.data.value?._id) {
-        user.value = response.data.value
-        return true
-      } else {
-        return false
-      }
-    } catch (error) {
-      await logout()
+      user.value = null
+      return false
+    } catch {
+      user.value = null
       return false
     }
   }
@@ -95,14 +96,18 @@ export const useAuth = defineStore('auth', () => {
   //   }
   // }
 
-  async function logout(): Promise<any> {
+  async function logout(): Promise<void> {
+    user.value = null
+    if (!import.meta.client) {
+      return
+    }
     try {
-      let res = await AuthAPI.logout()
-
-      user.value = null
-      useRouter().push('/')
-      return res
-    } catch { }
+      const { $apiFetch } = useNuxtApp()
+      await $apiFetch('/auth/logout', { method: 'POST' })
+    } catch {
+      /* уже не авторизован или сеть */
+    }
+    await navigateTo('/login')
   }
 
   async function updateUser(newUser: any, userId: string) {

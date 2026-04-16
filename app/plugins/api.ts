@@ -13,13 +13,23 @@ export default defineNuxtPlugin(() => {
       // response._data = new myBusinessResponse(response._data)
     },
     onResponseError({ response }) {
-      if (response._data.message) {
-        if (process.client)
-          toast(response._data.message, { type: 'error' })
+      const payload = response._data
+      const message =
+        payload && typeof payload === 'object' && 'message' in payload && typeof (payload as { message: unknown }).message === 'string'
+          ? (payload as { message: string }).message
+          : undefined
+      if (message && import.meta.client) {
+        toast(message, { type: 'error' })
       }
-      if (response.status === 401) {
-        useState('authRedirect').value = useRoute().path
-        navigateTo('/')
+      // navigateTo на сервере при401 часто даёт 500; редирект только на клиенте
+      if (import.meta.client && (response.status === 401 || response.status === 403)) {
+        const auth = useAuth()
+        auth.user = null
+        const path = useRoute().path
+        if (path !== '/login' && path !== '/registration') {
+          useState('authRedirect').value = path
+          void navigateTo('/login')
+        }
       }
     }
   })
